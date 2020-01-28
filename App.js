@@ -33,17 +33,18 @@ export default class App extends Component{
       email=this.state.data_3,
       givenName=this.state.data_1,
       familyName=this.state.data_2,
-      phonenumber=this.state.data_1
+      phonenumber=this.state.data_1,
+      page=this.state.page
     } = this.props
     switch(this.state.page) {
         case 'Login':
             DisplayPage = <Login changePage ={this.changePage}/>
           break;
         case 'LoginFacebook':
-            DisplayPage = <Register changePage ={this.changePage} email ={email} givenName={givenName} familyName={familyName}/>
+            DisplayPage = <Register changePage ={this.changePage} page={page}/>
           break;
         case 'LoginGoogle':
-            DisplayPage = <Register changePage ={this.changePage} email ={email} givenName={givenName} familyName={familyName}/>
+            DisplayPage = <Register changePage ={this.changePage} email ={email} givenName={givenName} familyName={familyName} page={page}/>
           break;
         case 'LoginNumber':
             DisplayPage = <LoginNumber changePage ={this.changePage}/>

@@ -9,7 +9,7 @@ export default class Register extends Component {
         if(Next == "OTPscreen"){
             page = Next
         }else{
-            if(this.props.email != null){
+            if(this.props.page == "LoginFacebook" || this.props.page =="LoginGoogle"){
                 page = "Login"
             }
             else{

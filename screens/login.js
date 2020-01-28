@@ -1,11 +1,13 @@
-import React,{Component} from 'react';
-import { Text, View, Image, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, Image, TouchableOpacity,AsyncStorage } from 'react-native';
 import StyleSheet from '../src/components/componentsLogin/styles'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {GoogleSignin, statusCodes } from 'react-native-google-signin';
+import { GoogleSignin, statusCodes, } from 'react-native-google-signin';
+import { LoginManager } from "react-native-fbsdk";
+
 var thisPage = ""
 export default class Login extends React.Component {
-    componentDidMount(){
+    componentDidMount() {
         GoogleSignin.configure({
             scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
             webClientId: '569463791717-ccnc7viaggejotcoujqt3uv6fgfu1j3q.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -15,65 +17,86 @@ export default class Login extends React.Component {
             forceConsentPrompt: true, // [Android] if you want to show the authorization prompt at each login.
             //accountName: '', // [Android] specifies an account name on the device that should be used
             //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-          });
+        });
     }
     Goto = () => {
         var page = thisPage
-        const {changePage}=this.props;
-        this.changePage= changePage;
+        const { changePage } = this.props;
+        this.changePage = changePage;
         this.changePage(page);
     }
-    LoginByGoogle = (givenName,familyName,email) => {
+    LoginByGoogle = (givenName, familyName, email) => {
         var page = "LoginGoogle"
-        console.log(givenName)
-        const {changePage}=this.props;
-        this.changePage= changePage;
-        this.changePage(page,givenName,familyName,email);
+        const { changePage } = this.props;
+        this.changePage = changePage;
+        this.changePage(page, givenName, familyName, email);
     }
-   _signInGoogle=async()=>{
+    LoginByFacebook = (result) => {
+        console.log(result)
+        var page = "LoginFacebook"
+        const { changePage } = this.props;
+        this.changePage = changePage;
+        this.changePage(page);
+    }
+    _signInGoogle = async () => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             console.log(userInfo.user.name);
-            //this.setState({ userInfo });
-            this.LoginByGoogle(userInfo.user.givenName,userInfo.user.familyName,userInfo.user.email)
-          } catch (error) {
+            this.LoginByGoogle(userInfo.user.givenName, userInfo.user.familyName, userInfo.user.email)
+        } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-              // user cancelled the login flow
-              console.log("user cancelled the login flow")
+                console.log("user cancelled the login flow")
             } else if (error.code === statusCodes.IN_PROGRESS) {
-              // operation (e.g. sign in) is in progress already
-              console.log("operation (e.g. sign in) is in progress already")
+                console.log("operation (e.g. sign in) is in progress already")
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-              // play services not available or outdated
-              console.log("play services not available or outdated")
+                console.log("play services not available or outdated")
             } else {
-              // some other error happened
-              console.log("some other error happened")
+                console.log("some other error happened")
             }
             console.log(error);
-          }
+        }
+    }
+
+    _signInFacebook = () => {
+        LoginManager.logInWithPermissions(["public_profile"]).then(
+            function (result) {
+                if (result.isCancelled) {
+                    console.log("Login cancelled");
+                } else {
+                    console.log(
+                        "Login success with permissions: " +
+                        result.grantedPermissions.toString()
+                    );
+                    var data = result.grantedPermissions.toString() //ทดสอบส่งของมูลที่อยู่ใน Function ที่เป็น Permissions
+                    this.LoginByFacebook(data)
+                }
+            }.bind(this), //bind(this) ส่งข้อมูลที่่อยู่ภายใต้ Function ที่เป็น Permissions ออกมา
+            function (error) {
+                console.log("Login fail with error: " + error);
+            },  
+        );
     }
 
     render() {
         return (
-            <View style={StyleSheet.container}>    
+            <View style={StyleSheet.container}>
                 <Image
                     source={require('../assets/image/logo.png')}
                     style={{ width: 180, height: 180 }}
                 />
                 <Text style={StyleSheet.textLogin1}>เข้าสู่ระบบสมาชิก</Text>
-                <TouchableOpacity style={StyleSheet.buttonLoginNumber}  onPress={()=>this.Goto(thisPage="LoginNumber")}>
+                <TouchableOpacity style={StyleSheet.buttonLoginNumber} onPress={() => this.Goto(thisPage = "LoginNumber")}>
                     <Text style={StyleSheet.textbuttonNumber}>
                         เข้าสู่ระบบด้วยเบอร์โทรศัพท์
                 </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={StyleSheet.buttonLoginFacebook} onPress={()=>this.Goto(thisPage="LoginFacebook")}>
+                <TouchableOpacity style={StyleSheet.buttonLoginFacebook} onPress={this._signInFacebook}>
                     <Text style={StyleSheet.textbuttonFacebookAndGoogle}>
                         เข้าสู่ระบบด้วย  <Icon name="facebook" color="#FFFFFF" size={20} />
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={StyleSheet.buttonLoginGoogle} /*onPress={()=>this.Goto(thisPage="LoginGoogle")}*/onPress={this._signInGoogle}>
+                <TouchableOpacity style={StyleSheet.buttonLoginGoogle} onPress={this._signInGoogle}>
                     <Text style={StyleSheet.textbuttonFacebookAndGoogle}>
                         เข้าสู่ระบบด้วย  <Icon name="google-plus" color="#FFFFFF" size={20} />
                     </Text>
