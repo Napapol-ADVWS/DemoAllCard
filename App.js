@@ -9,10 +9,12 @@ import OTPscreen from './screens/OTPsreen'
 
 
 export default class App extends Component{
-  changePage = (page,data) =>{
+  changePage = (page,data_1,data_2,data_3) =>{
     this.setState({
       page:page,
-      data:data
+      data_1:data_1,
+      data_2:data_2,
+      data_3,data_3
     })
   }
   
@@ -20,26 +22,28 @@ export default class App extends Component{
     super(props);
     this.state = {
       page:"Login",
-      data:""
+      data_1:"",
+      data_2:"",
+      data_3:"",
     }
   }
   render(){
     var DisplayPage = <Login changePage ={this.changePage}/>
     const{ 
-      email="mydeverlop@gmail.com",
-      nameUser="Napapol",
-      lastNameUser="Kwanthong",
-      phonenumber=this.state.data
+      email=this.state.data_3,
+      givenName=this.state.data_1,
+      familyName=this.state.data_2,
+      phonenumber=this.state.data_1
     } = this.props
     switch(this.state.page) {
         case 'Login':
             DisplayPage = <Login changePage ={this.changePage}/>
           break;
         case 'LoginFacebook':
-            DisplayPage = <Register changePage ={this.changePage} email ={email} nameUser={nameUser} lastNameUser={lastNameUser}/>
+            DisplayPage = <Register changePage ={this.changePage} email ={email} givenName={givenName} familyName={familyName}/>
           break;
         case 'LoginGoogle':
-            DisplayPage = <Register changePage ={this.changePage} email ={email}/>
+            DisplayPage = <Register changePage ={this.changePage} email ={email} givenName={givenName} familyName={familyName}/>
           break;
         case 'LoginNumber':
             DisplayPage = <LoginNumber changePage ={this.changePage}/>

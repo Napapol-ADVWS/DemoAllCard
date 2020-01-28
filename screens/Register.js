@@ -28,8 +28,8 @@ export default class Register extends Component {
     render() {
         const{ 
             email=this.props.email,
-            nameUser=this.props.nameUser,
-            lastNameUser=this.props.lastNameUser,
+            givenName=this.props.givenName,
+            familyName=this.props.familyName,
             phonenumber=this.props.phonenumber
         } = this.props
         return (
@@ -47,7 +47,7 @@ export default class Register extends Component {
                         <Icon name="chevron-left" color="#FFF" size={30} />
                     </TouchableOpacity>
                 </View>
-                <Regis Nextto={this.Nextto} email={email} nameUser={nameUser} lastNameUser={lastNameUser} phonenumber={phonenumber} />
+                <Regis Nextto={this.Nextto} email={email} givenName={givenName} familyName={familyName} phonenumber={phonenumber} />
             </View>
        
         )

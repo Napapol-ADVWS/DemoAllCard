@@ -20,7 +20,7 @@ class Regis extends React.Component {
                     <Icon name="user" color="#182e68" size={30} />
                     <Text style={{ paddingRight: 8 }} />
                     <TextInput style={{width:230}}
-                        value={this.props.nameUser}
+                        value={this.props.givenName}
                         placeholder="ชื่อจริง"
                     />
                 </View>
@@ -29,7 +29,7 @@ class Regis extends React.Component {
                     <Icon name="user" color="#182e68" size={30} />
                     <Text style={{ paddingRight: 8 }} />
                     <TextInput style={{width:230}}
-                           value={this.props.lastNameUser}
+                           value={this.props.familyName}
                         placeholder="นามสกุล"
                     />
                 </View>

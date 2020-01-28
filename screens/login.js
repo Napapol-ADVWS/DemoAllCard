@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { Text, View, Image, TouchableOpacity} from 'react-native';
 import StyleSheet from '../src/components/componentsLogin/styles'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {GoogleSignin, /*GoogleSigninButton,*/ statusCodes } from '@react-native-community/google-signin';
+import {GoogleSignin, statusCodes } from 'react-native-google-signin';
 var thisPage = ""
 export default class Login extends React.Component {
     componentDidMount(){
@@ -23,21 +23,33 @@ export default class Login extends React.Component {
         this.changePage= changePage;
         this.changePage(page);
     }
-   _GooglesignIn=async()=>{
+    LoginByGoogle = (givenName,familyName,email) => {
+        var page = "LoginGoogle"
+        console.log(givenName)
+        const {changePage}=this.props;
+        this.changePage= changePage;
+        this.changePage(page,givenName,familyName,email);
+    }
+   _signInGoogle=async()=>{
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            console.log(userInfo);
+            console.log(userInfo.user.name);
             //this.setState({ userInfo });
+            this.LoginByGoogle(userInfo.user.givenName,userInfo.user.familyName,userInfo.user.email)
           } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
               // user cancelled the login flow
+              console.log("user cancelled the login flow")
             } else if (error.code === statusCodes.IN_PROGRESS) {
               // operation (e.g. sign in) is in progress already
+              console.log("operation (e.g. sign in) is in progress already")
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
               // play services not available or outdated
+              console.log("play services not available or outdated")
             } else {
               // some other error happened
+              console.log("some other error happened")
             }
             console.log(error);
           }
@@ -61,7 +73,7 @@ export default class Login extends React.Component {
                         เข้าสู่ระบบด้วย  <Icon name="facebook" color="#FFFFFF" size={20} />
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={StyleSheet.buttonLoginGoogle} onPress={()=>this.Goto(thisPage="LoginGoogle")}>
+                <TouchableOpacity style={StyleSheet.buttonLoginGoogle} /*onPress={()=>this.Goto(thisPage="LoginGoogle")}*/onPress={this._signInGoogle}>
                     <Text style={StyleSheet.textbuttonFacebookAndGoogle}>
                         เข้าสู่ระบบด้วย  <Icon name="google-plus" color="#FFFFFF" size={20} />
                     </Text>
